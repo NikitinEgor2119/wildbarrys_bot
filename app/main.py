@@ -2,24 +2,20 @@ import asyncio
 from fastapi import FastAPI, Depends
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.ext.asyncio import AsyncSession
-from aiogram import Bot, Dispatcher, executor, types
+from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 
 from app.db.session import get_db
 from app.db.models import Product, User
 from app.api.v1.endpoints.products import fetch_product_data
 
-
 BOT_TOKEN = "7946055764:AAHMJbEO43JWUp3tUDs2HB6wlNj9j4KAiwg"
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher(bot)
 
-
 app = FastAPI()
 
-
 scheduler = AsyncIOScheduler()
-
 
 @dp.message(Command("start"))
 async def start(message: types.Message):
@@ -77,7 +73,6 @@ async def process_artikul(message: types.Message):
     else:
         await message.answer("Товар не найден. Проверьте артикул.")
 
-
 @app.get("/api/v1/subscribe/{artikul}")
 async def subscribe_product(artikul: int, db: AsyncSession = Depends(get_db)):
     scheduler.add_job(periodic_fetch, 'interval', minutes=30, args=(artikul, db))
@@ -104,7 +99,6 @@ async def periodic_fetch(artikul: int, db: AsyncSession):
                     quantity=product_data["quantity"]
                 ))
 
-
 async def main():
     bot_task = asyncio.create_task(dp.start_polling(bot))
     uvicorn_task = asyncio.create_task(run_uvicorn())
@@ -118,5 +112,4 @@ async def run_uvicorn():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
 
