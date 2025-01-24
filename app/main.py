@@ -11,7 +11,7 @@ from app.api.v1.endpoints.products import fetch_product_data
 
 BOT_TOKEN = "7946055764:AAHMJbEO43JWUp3tUDs2HB6wlNj9j4KAiwg"
 bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 app = FastAPI()
 
@@ -100,7 +100,7 @@ async def periodic_fetch(artikul: int, db: AsyncSession):
                 ))
 
 async def main():
-    bot_task = asyncio.create_task(dp.start_polling(bot))
+    bot_task = asyncio.create_task(dp.start_polling(bot))  # Передаем bot в start_polling
     uvicorn_task = asyncio.create_task(run_uvicorn())
     await asyncio.gather(bot_task, uvicorn_task)
 
@@ -112,4 +112,3 @@ async def run_uvicorn():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
