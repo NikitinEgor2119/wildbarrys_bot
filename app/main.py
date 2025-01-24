@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-DATABASE_URL = "postgresql+asyncpg://user:password@localhost/dbname"  # Замените на ваши данные
+DATABASE_URL = "postgresql+asyncpg://user:user@localhost/dbname"
 engine = create_async_engine(DATABASE_URL)
 AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
