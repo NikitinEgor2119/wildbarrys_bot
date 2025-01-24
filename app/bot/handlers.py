@@ -1,13 +1,9 @@
-import logging
 from aiogram import types
 from aiogram.filters import Command
-from aiogram import Dispatcher
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from app.db.models import User, Product
 from app.services.wildberries import fetch_product_data
-
-logger = logging.getLogger(__name__)
 
 async def start(message: types.Message, db: AsyncSession):
     try:
@@ -23,11 +19,11 @@ async def start(message: types.Message, db: AsyncSession):
                 last_name=user.last_name
             ))
             await db.commit()
-            logger.debug("New user added to the database")
 
         await message.answer("Привет! Введите артикул товара.")
     except Exception as e:
-        logger.error(f"Error in start handler: {e}")
+        await message.answer("Произошла ошибка. Попробуйте позже.")
+        print(f"Error in start handler: {e}")
 
 async def process_artikul(message: types.Message, db: AsyncSession):
     try:
@@ -59,7 +55,6 @@ async def process_artikul(message: types.Message, db: AsyncSession):
                     quantity=product_data["quantity"]
                 ))
             await db.commit()
-            logger.debug("Product data updated in the database")
 
             await message.answer(
                 f"Название: {product_data['name']}\n"
@@ -71,8 +66,9 @@ async def process_artikul(message: types.Message, db: AsyncSession):
         else:
             await message.answer("Товар не найден. Проверьте артикул.")
     except Exception as e:
-        logger.error(f"Error in process_artikul handler: {e}")
+        await message.answer("Произошла ошибка. Попробуйте позже.")
+        print(f"Error in process_artikul handler: {e}")
 
-def register_handlers(dp: Dispatcher):
+def register_handlers(dp):
     dp.message.register(start, Command("start"))
     dp.message.register(process_artikul)
