@@ -18,6 +18,7 @@ app.include_router(products_router)
 
 scheduler = AsyncIOScheduler()
 
+
 BOT_TOKEN = "7946055764:AAHMJbEO43JWUp3tUDs2HB6wlNj9j4KAiwg"
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
